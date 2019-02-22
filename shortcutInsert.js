@@ -17,14 +17,7 @@ chrome.storage.local.get('names', function(result) {
 	Large window revolve: .toolbar-item:nth-child(2) .os-row > .tool:nth-child(2)
 */
 function keyhit(keyEvt) {
-
-	// var inputs = document.getElementsByTagName("input");
-	// for(var i = 0; i < inputs.length; i++) {
-	// 	if(inputs[i]) {
-
-	// 	}
-	// }
-	for(var i = 0; i < names.length; i++) {
+	for(let i = 0; i < names.length; i++) {
 		console.log(names[i][1]);
 		if(keyEvt.key == names[i][1]) {
 			pressButton(names[i][0]);
@@ -65,11 +58,3 @@ function getButtons() {
 
 	}
 }
-	// var s = document.createElement('script');
-	// s.textContent = code;
-	// (document.head||document.documentElement).appendChild(s);
-
-
-//var x = $("[command-id='extrude']");
-//x.click();
-//console.log(x);

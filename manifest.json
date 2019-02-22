@@ -15,17 +15,6 @@
     	"storage",
     	"tabs"
     ],
-    "commands": {
-    	/*
-    	"_extrude": {
-    		"suggested_key": {
-              "default": "Alt+E",
-              "mac": "Alt+E"
-            },
-            "description": "Onshape extrude"
-    	}
-    	*/
-    },
     "content_scripts": [
     	{
     	"matches": ["https://cad.onshape.com/*"],
