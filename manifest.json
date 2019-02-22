@@ -1,0 +1,37 @@
+  {
+    "name": "Onshape Shortcuts",
+    "version": "1.0",
+    "description": "Add custom shortcuts to Onshape",
+    "background": {
+      "scripts": ["background.js"],
+      "persistent": true
+    },
+    "page_action": {
+      "default_popup": "popup.html"
+    },
+    "options_page": "options.html",
+    "permissions": [
+    	"activeTab",
+    	"storage",
+    	"tabs"
+    ],
+    "commands": {
+    	/*
+    	"_extrude": {
+    		"suggested_key": {
+              "default": "Alt+E",
+              "mac": "Alt+E"
+            },
+            "description": "Onshape extrude"
+    	}
+    	*/
+    },
+    "content_scripts": [
+    	{
+    	"matches": ["https://cad.onshape.com/*"],
+    	"js": ["jquery-3.3.1.js", "shortcutInsert.js"],
+    	"run_at": "document_end"
+    	}
+    ],
+    "manifest_version": 2
+  }

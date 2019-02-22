@@ -1,0 +1,28 @@
+.shortcutsContainer {
+	margin-bottom: 4px;
+	position: static;
+	display:block;
+	border-width: 1px;
+	border-style: solid;
+}
+.title {
+	display:inline-block;
+	position: relative;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-top: 1px;
+	padding-bottom: 1px;
+	margin-right: 1px;
+}
+.key {
+	display:inline;
+}
+p {
+	display: inline;
+	width:30%;
+}
+
+#root_list {
+	margin:2px;
+}
+
