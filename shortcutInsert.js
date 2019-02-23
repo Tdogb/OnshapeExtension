@@ -1,15 +1,33 @@
 //chrome.commands.onCommand.addListener(function(command) {
-//Inject a script to montitor keyboard keys
-
-(function() {
-	(document.body).addEventListener("keypress", function(keyEvt){ keyhit(keyEvt); });
-})();
+//Inject a script to monitor keyboard keys
+var foundButtons = false;
+var inputHappening = false;
+var timeout1 = 10;
+//(function() {
+//(document.body).addEventListener("input", function(){ inputCheck(); });
+//(document.body).addEventListener("keypress", function(keyEvt){ setTimeout(keyhit(keyEvt), 3); });
+Mousetrap.bind('h', function() {hPressed();})
+//});
 
 var names;
 chrome.storage.local.get('names', function(result) {
 	names = result.names;
 });
 
+//Use the onload and onunload
+function inputCheck() {
+	inputHappening = true;
+	console.log("inputcheck");
+	setTimeout(inputHappeningFalse, timeout1);
+}
+
+function inputHappeningFalse() {
+	inputHappening = false;
+}
+
+function hPressed() {
+	console.log("h pressed");
+}
 /*
 	Small window extrude: .os-tool-dropdown-content > .tool:nth-child(1)
 	Small window revolve: .os-tool-dropdown-content > .tool:nth-child(2)
@@ -17,6 +35,21 @@ chrome.storage.local.get('names', function(result) {
 	Large window revolve: .toolbar-item:nth-child(2) .os-row > .tool:nth-child(2)
 */
 function keyhit(keyEvt) {
+	console.log("keyhit")
+	if(!inputHappening) {
+		if(!foundButtons) {
+			foundButtons = getButtons();
+			if(foundButtons) {
+				executeKeypress(keyEvt);
+			}
+		}
+		else {
+			executeKeypress(keyEvt);
+		}
+	}
+}
+
+function executeKeypress(keyEvt) {
 	for(let i = 0; i < names.length; i++) {
 		console.log(names[i][1]);
 		if(keyEvt.key == names[i][1]) {
@@ -52,9 +85,8 @@ function pressButton(_button) {
 }
 
 function getButtons() {
-	var tbLen = document.querySelectorAll(".toolbar-item");
-	var tLen;
-	for(var i=1; i <= tbLen.length; i++) {
-
-	}
+	let toolbar = document.querySelectorAll(".toolbar-item");
+	let tLen;
+	console.log(toolbar);
+	return toolbar.length > 0;
 }

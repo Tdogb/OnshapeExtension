@@ -18,7 +18,7 @@
     "content_scripts": [
     	{
     	"matches": ["https://cad.onshape.com/*"],
-    	"js": ["jquery-3.3.1.js", "shortcutInsert.js"],
+    	"js": ["jquery-3.3.1.js", "mousetrap.min.js", "shortcutInsert.js"],
     	"run_at": "document_end"
     	}
     ],
