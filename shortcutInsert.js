@@ -6,35 +6,35 @@ var timeout1 = 10;
 //(function() {
 //(document.body).addEventListener("input", function(){ inputCheck(); });
 //(document.body).addEventListener("keypress", function(keyEvt){ setTimeout(keyhit(keyEvt), 3); });
-Mousetrap.bind('h', function() {hPressed();})
+
 //});
 
 var names;
 chrome.storage.local.get('names', function(result) {
 	names = result.names;
+	for(let i = 0; i < names.length; i++) {
+		console.log(names[i][1]);
+		Mousetrap.bind(names[i][1], function(e) {keyHit(e);});
+	}
 });
 
-//Use the onload and onunload
-function inputCheck() {
-	inputHappening = true;
-	console.log("inputcheck");
-	setTimeout(inputHappeningFalse, timeout1);
-}
-
-function inputHappeningFalse() {
-	inputHappening = false;
-}
-
-function hPressed() {
-	console.log("h pressed");
-}
+// //Use the onload and onunload
+// function inputCheck() {
+// 	inputHappening = true;
+// 	console.log("inputcheck");
+// 	setTimeout(inputHappeningFalse, timeout1);
+// }
+//
+// function inputHappeningFalse() {
+// 	inputHappening = false;
+// }
 /*
 	Small window extrude: .os-tool-dropdown-content > .tool:nth-child(1)
 	Small window revolve: .os-tool-dropdown-content > .tool:nth-child(2)
 	Large window extrude: .toolbar-item:nth-child(2) .os-row > .tool:nth-child(1)
 	Large window revolve: .toolbar-item:nth-child(2) .os-row > .tool:nth-child(2)
 */
-function keyhit(keyEvt) {
+function keyHit(keyEvt) {
 	console.log("keyhit")
 	if(!inputHappening) {
 		if(!foundButtons) {
@@ -60,7 +60,7 @@ function executeKeypress(keyEvt) {
 }
 
 function pressButton(_button) {
-	var listOfButtons = document.querySelectorAll(".tool");
+	let listOfButtons = document.querySelectorAll(".tool");
 	console.log(listOfButtons);
 	var toolbar_item = 0;
 	var tool = 0;
@@ -86,7 +86,10 @@ function pressButton(_button) {
 
 function getButtons() {
 	let toolbar = document.querySelectorAll(".toolbar-item");
-	let tLen;
+    let svgs = toolbar[0].getElementsByClassName("os-svg-icon");
+	console.log("getButtons: ");
+	console.log(svgs);
 	console.log(toolbar);
+	console.log("end");
 	return toolbar.length > 0;
 }
