@@ -10,6 +10,7 @@ var timeout1 = 10;
 //});
 
 var names;
+var new_names;
 chrome.storage.local.get('names', function(result) {
 	names = result.names;
 	for(let i = 0; i < names.length; i++) {
@@ -17,17 +18,6 @@ chrome.storage.local.get('names', function(result) {
 		Mousetrap.bind(names[i][1], function(e) {keyHit(e);});
 	}
 });
-
-// //Use the onload and onunload
-// function inputCheck() {
-// 	inputHappening = true;
-// 	console.log("inputcheck");
-// 	setTimeout(inputHappeningFalse, timeout1);
-// }
-//
-// function inputHappeningFalse() {
-// 	inputHappening = false;
-// }
 /*
 	Small window extrude: .os-tool-dropdown-content > .tool:nth-child(1)
 	Small window revolve: .os-tool-dropdown-content > .tool:nth-child(2)
@@ -35,7 +25,6 @@ chrome.storage.local.get('names', function(result) {
 	Large window revolve: .toolbar-item:nth-child(2) .os-row > .tool:nth-child(2)
 */
 function keyHit(keyEvt) {
-	console.log("keyhit")
 	if(!inputHappening) {
 		if(!foundButtons) {
 			foundButtons = getButtons();
@@ -51,7 +40,6 @@ function keyHit(keyEvt) {
 
 function executeKeypress(keyEvt) {
 	for(let i = 0; i < names.length; i++) {
-		console.log(names[i][1]);
 		if(keyEvt.key == names[i][1]) {
 			pressButton(names[i][0]);
 		}
@@ -86,10 +74,39 @@ function pressButton(_button) {
 
 function getButtons() {
 	let toolbar = document.querySelectorAll(".toolbar-item");
-    let svgs = toolbar[0].getElementsByClassName("os-svg-icon");
-	console.log("getButtons: ");
-	console.log(svgs);
-	console.log(toolbar);
-	console.log("end");
+	var svgs = new Array();
+	var newNames = new Array();
+	for(let i = 0; i < toolbar.length; i++) {
+	    let temp = toolbar[i].getElementsByClassName("os-svg-icon");
+	    if(temp.length != 0) {
+            svgs[i] = temp;
+        }
+    }
+	let iterate = 0;
+    for(let i = 0; i < svgs.length; i++) {
+        for(let b = 0; b < svgs[i].length; b++) {
+            let temp =svgs[i][b].innerHTML.slice(svgs[i][b].innerHTML.search("svg-icon-") + "svg-icon-".length, svgs[i][b].innerHTML.search("-button"));
+            if(temp != "expanded\"></use") {
+                newNames[iterate] = temp;
+                iterate++;
+            }
+        }
+    }
+    /*
+    format to go into chrome storage
+     */
+    new_names = new Array(newNames.length);
+    for(let i = 0; i < newNames.length; i++) {
+        if(i < names.length) {
+            new_names[i] = [newNames[i], names[i][1]];
+        }
+        else {
+            new_names[i] = [newNames[i], ""];
+        }
+    }
+    chrome.storage.local.set({'names': new_names});
+    console.log(svgs);
+	console.log(newNames);
+	console.log(new_names);
 	return toolbar.length > 0;
 }
