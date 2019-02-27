@@ -1,8 +1,8 @@
 var list = [
-	["sketch", "s"],
-	["extrude", "e"],
-	["revolve", "r"],
-	["sweep", "w"]
+	["undo", "", [0,0]],
+	["redo", "", [0,1]],
+	["new-sketch", "s", [1,0]],
+	["extrude", "e", [2,0]]
 ];
 chrome.runtime.onInstalled.addListener(function() {
 	chrome.storage.local.set({'names': list});
