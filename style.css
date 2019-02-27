@@ -1,22 +1,35 @@
 .shortcutsContainer {
 	margin-bottom: 4px;
+	padding-bottom: 2px;
+	padding-top: 2px;
 	position: static;
 	display:block;
-	border-width: 1px;
+	border-width: 2px;
 	border-style: solid;
+	border-radius: 3px;
+	margin-left: 25%;
+	margin-right: 25%
 }
 .title {
 	display:inline-block;
 	position: relative;
-	padding-left: 5px;
-	padding-right: 5px;
-	padding-top: 1px;
-	padding-bottom: 1px;
-	margin-right: 1px;
+	padding-left: 10px;
 }
+
+.pTitle {
+	font-size: 10pt;
+	color: #333;
+	font-weight: 400;
+	line-height: 1.8em;
+	font-family: Flama,Open Sans,Helvetica Neue,Helvetica,Arial,sans-serif;
+}
+
 .key {
 	display:inline;
+	position: absolute;
+	left:60%;
 }
+
 p {
 	display: inline;
 	width:30%;

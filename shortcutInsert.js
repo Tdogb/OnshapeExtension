@@ -1,16 +1,16 @@
 //chrome.commands.onCommand.addListener(function(command) {
 //Inject a script to monitor keyboard keys
-var foundButtons = false;
-var inputHappening = false;
-var timeout1 = 10;
+let foundButtons = false;
+let inputHappening = false;
 //(function() {
 //(document.body).addEventListener("input", function(){ inputCheck(); });
 //(document.body).addEventListener("keypress", function(keyEvt){ setTimeout(keyhit(keyEvt), 3); });
 
 //});
 
-var names;
-var new_names;
+let names;
+let new_names;
+let toolbarPosition;
 chrome.storage.local.get('names', function(result) {
 	names = result.names;
 	for(let i = 0; i < names.length; i++) {
@@ -47,11 +47,12 @@ function executeKeypress(keyEvt) {
 	console.log("keypress");
 }
 
-function pressButton(_button) {
+function pressButton(_button, tb1, tb2) {
 	let listOfButtons = document.querySelectorAll(".tool");
 	console.log(listOfButtons);
-	var toolbar_item = 0;
-	var tool = 0;
+	let toolbar_item = 0;
+	let tool = 0;
+	let tool_click;
 	//if we are in parts studio
 	switch(_button) {
 		case "sketch":
@@ -65,17 +66,17 @@ function pressButton(_button) {
 			tool = 2;
 			break;
 	};
-	var tool_click = document.querySelector(".toolbar-item:nth-child(" + toolbar_item +") .os-row > .tool:nth-child(" + tool + ")");
+	tool_click = document.querySelector(".toolbar-item:nth-child(" + toolbar_item +") .os-row > .tool:nth-child(" + tool + ")");
 	//.toolbar-item:nth-child(2) .os-row > .tool:nth-child(1)
-	var event = document.createEvent('MouseEvent');
+	let event = document.createEvent('MouseEvent');
 	event.initMouseEvent('click', true, true, window, 1, 0,0,0,0,false,false,false,false,0,null);
 	tool_click.dispatchEvent(event);
 }
 
 function getButtons() {
 	let toolbar = document.querySelectorAll(".toolbar-item");
-	var svgs = new Array();
-	var newNames = new Array();
+	let svgs = new Array();
+	let newNames = new Array();
 	for(let i = 0; i < toolbar.length; i++) {
 	    let temp = toolbar[i].getElementsByClassName("os-svg-icon");
 	    if(temp.length != 0) {
@@ -85,8 +86,9 @@ function getButtons() {
 	let iterate = 0;
     for(let i = 0; i < svgs.length; i++) {
         for(let b = 0; b < svgs[i].length; b++) {
-            let temp =svgs[i][b].innerHTML.slice(svgs[i][b].innerHTML.search("svg-icon-") + "svg-icon-".length, svgs[i][b].innerHTML.search("-button"));
+            let temp = svgs[i][b].innerHTML.slice(svgs[i][b].innerHTML.search("svg-icon-") + "svg-icon-".length, svgs[i][b].innerHTML.search("-button"));
             if(temp != "expanded\"></use") {
+            	//toolbarPosition[iterate] = {i,b};
                 newNames[iterate] = temp;
                 iterate++;
             }
