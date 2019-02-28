@@ -5,7 +5,7 @@ var list = [
 	["extrude", "e", [2,0]]
 ];
 chrome.runtime.onInstalled.addListener(function() {
-	chrome.storage.local.set({'names': list});
+    chrome.storage.local.set({'names': list});
 });
 
 chrome.browserAction.onClicked.addListener(function (tab) {

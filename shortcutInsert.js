@@ -25,15 +25,16 @@ chrome.storage.local.get('names', function(result) {
 	Large window revolve: .toolbar-item:nth-child(2) .os-row > .tool:nth-child(2)
 */
 function keyHit(keyEvt) {
-	if(!inputHappening) {
-		if(!foundButtons) {
-			foundButtons = getButtons();
-			if(foundButtons) {
+	if(document.getElementById("feature-dialog") == null) {
+		if (!inputHappening) {
+			if (!foundButtons) {
+				foundButtons = getButtons();
+				if (foundButtons) {
+					executeKeypress(keyEvt);
+				}
+			} else {
 				executeKeypress(keyEvt);
 			}
-		}
-		else {
-			executeKeypress(keyEvt);
 		}
 	}
 }
@@ -87,9 +88,15 @@ function getButtons() {
     format to go into chrome storage
      */
     new_names = new Array(newNames.length);
+    console.log(newNames);
+    console.log(names);
     for(let i = 0; i < newNames.length; i++) {
         if(i < names.length) {
-            new_names[i] = [newNames[i], names[i][1], toolbarPosition[i]];
+        	for(let b = 0; b < names.length; b++) {
+        		if(newNames[i] === names[b][0]) {
+					new_names[i] = [newNames[i], names[b][1], toolbarPosition[i]];
+				}
+			}
         }
         else if(i < toolbarPosition.length){
             new_names[i] = [newNames[i], "", toolbarPosition[i]];
@@ -100,6 +107,7 @@ function getButtons() {
     }
     chrome.storage.local.set({'names': new_names});
     chrome.storage.local.get('names', function(result) {
+    	console.log("Result after setting new_names:");
     	console.log(result);
 	});
     //console.log(svgs);
