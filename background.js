@@ -5,12 +5,13 @@ var list = [
 	["extrude", "e", [2,0]]
 ];
 chrome.runtime.onInstalled.addListener(function() {
+	chrome.storage.local.get('names', function (result) {
+		chrome.storage.local.set({'names_test': result});
+	});
     chrome.storage.local.set({'names': list});
 });
-
 chrome.browserAction.onClicked.addListener(function (tab) {
 	// for the current tab, inject the "inject.js" file & execute it
-	console.log(tab);
 	s.src = chrome.extension.getURL('shortcutInsert.js');
 		s.onload = function() {
     		this.remove();
@@ -19,4 +20,3 @@ chrome.browserAction.onClicked.addListener(function (tab) {
 		file: 'shortcutInsert.js'
 	});
 });
-

@@ -2,30 +2,38 @@
 //Inject a script to monitor keyboard keys
 let foundButtons = false;
 let inputHappening = false;
-//(function() {
-//(document.body).addEventListener("input", function(){ inputCheck(); });
-//(document.body).addEventListener("keypress", function(keyEvt){ setTimeout(keyhit(keyEvt), 3); });
-
-//});
-
 let names;
 let new_names;
 let toolbarPosition = new Array();
+let observerConfig = {attributes: false, childList: true, subtree: true};
+
+let observer = new MutationObserver(function (mutationList, observer) {
+	for(let mutation in mutationList) {
+	}
+	//console.log(mutationList);
+});
+observer.observe(document, observerConfig);
+
 chrome.storage.local.get('names', function(result) {
 	names = result.names;
 	for(let i = 0; i < names.length; i++) {
-		//console.log(names[i][1]);
 		Mousetrap.bind(names[i][1], function(e) {keyHit(e);});
 	}
 });
-/*
-	Small window extrude: .os-tool-dropdown-content > .tool:nth-child(1)
-	Small window revolve: .os-tool-dropdown-content > .tool:nth-child(2)
-	Large window extrude: .toolbar-item:nth-child(2) .os-row > .tool:nth-child(1)
-	Large window revolve: .toolbar-item:nth-child(2) .os-row > .tool:nth-child(2)
-*/
+
+//TEMPORARY
+chrome.storage.local.get('names_test', function (result) {
+	console.log(result);
+});
+
 function keyHit(keyEvt) {
-	if(document.getElementById("feature-dialog") == null) {
+	//TEMPORARY
+
+	console.log(keyEvt);
+	console.log(inputHappening);
+	console.log(foundButtons);
+	//console.log("len: " + $("[command-id=UNDO_A_CHANGE]").length > 0);
+	if(document.getElementById("feature-dialog") == null) { //&& $("[command-id='UNDO_A_CHANGE']").length > 0
 		if (!inputHappening) {
 			if (!foundButtons) {
 				foundButtons = getButtons();
@@ -41,34 +49,32 @@ function keyHit(keyEvt) {
 
 function executeKeypress(keyEvt) {
 	for(let i = 0; i < names.length; i++) {
-		if(keyEvt.key == names[i][1]) {
+		if(keyEvt.key === names[i][1]) {
 			pressButton(names[i][2][0], names[i][2][1]+1);
 		}
 	}
-	//console.log("keypress");
+	console.log("keypress");
 }
 
 function pressButton(toolbar_item, tool) {
-	//let listOfButtons = document.querySelectorAll(".tool");
-	//let toolbar_item = 0;
-	//let tool = 0;
+	console.log(toolbar_item + " " + tool);
 	let tool_click;
 	//if we are in parts studio
-
 	tool_click = document.querySelector(".toolbar-item:nth-child(" + toolbar_item +") .os-row > .tool:nth-child(" + tool + ")");
-	//.toolbar-item:nth-child(2) .os-row > .tool:nth-child(1)
+	console.log("tool_click: " + tool_click);
 	let event = document.createEvent('MouseEvent');
 	event.initMouseEvent('click', true, true, window, 1, 0,0,0,0,false,false,false,false,0,null);
 	tool_click.dispatchEvent(event);
 }
 
 function getButtons() {
-	let toolbar = document.querySelectorAll(".toolbar-item");
+	console.log("getbuttons");
+	let toolbar = $(".toolbar-item");
 	let svgs = new Array();
 	let newNames = new Array();
 	for(let i = 0; i < toolbar.length; i++) {
 	    let temp = toolbar[i].getElementsByClassName("os-svg-icon");
-	    if(temp.length != 0) {
+	    if(temp.length !== 0) {
             svgs[i] = temp;
         }
     }
@@ -76,7 +82,7 @@ function getButtons() {
     for(let i = 0; i < svgs.length; i++) {
         for(let b = 0; b < svgs[i].length; b++) {
             let temp = svgs[i][b].innerHTML.slice(svgs[i][b].innerHTML.search("svg-icon-") + "svg-icon-".length, svgs[i][b].innerHTML.search("-button"));
-            if(temp != "expanded\"></use") {
+            if(temp !== "expanded\"></use") {
             	toolbarPosition[iterate] = [i,b];
                 newNames[iterate] = temp;
                 iterate++;
@@ -88,30 +94,35 @@ function getButtons() {
     format to go into chrome storage
      */
     new_names = new Array(newNames.length);
+    new_names = names;
     console.log(newNames);
     console.log(names);
-    for(let i = 0; i < newNames.length; i++) {
-        if(i < names.length) {
-        	for(let b = 0; b < names.length; b++) {
-        		if(newNames[i] === names[b][0]) {
-					new_names[i] = [newNames[i], names[b][1], toolbarPosition[i]];
+    console.log(new_names);
+    if(newNames.length > names.length) {
+    	for(let i = 0; i < newNames.length; i++) {
+
+		}
+		for(let i = 0; i < newNames.length; i++) {
+			if(i >= toolbarPosition.length) {
+				for(let b = 0; b < names.length; b++) {
+					if (newNames[i] === names[b][0]) {
+						new_names[i] = [newNames[i], names[b][1], toolbarPosition[i]];
+					}
 				}
 			}
-        }
-        else if(i < toolbarPosition.length){
-            new_names[i] = [newNames[i], "", toolbarPosition[i]];
-        }
-        else {
-        	new_names[i] = [newNames[i], "", ["",""]];
+			else if(i < toolbarPosition.length){
+				new_names[i] = [newNames[i], "", toolbarPosition[i]];
+			}
+			else {
+				new_names[i] = [newNames[i], "", ["",""]];
+			}
 		}
-    }
-    chrome.storage.local.set({'names': new_names});
-    chrome.storage.local.get('names', function(result) {
-    	console.log("Result after setting new_names:");
-    	console.log(result);
-	});
-    //console.log(svgs);
-	//console.log(newNames);
-	//console.log(new_names);
-	return toolbar.length > 0;
+		chrome.storage.local.set({'names': new_names});
+		chrome.storage.local.get('names', function(result) {
+			console.log("Result after setting new_names:");
+			console.log(result);
+		});
+		return toolbar.length > 0;
+	}
+    return true;
 }
